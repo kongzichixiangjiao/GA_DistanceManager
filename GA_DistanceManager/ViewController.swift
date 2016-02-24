@@ -19,12 +19,12 @@ class ViewController: UIViewController {
 
     @IBAction func updateM(sender: UIButton) {
         let t = self.view.viewWithTag(111) as! GA_TextField
-        t.update(.MIDDLE)
+        t.update(.MIDDLE, btnPositionType: .RIGHTBUTTON)
     }
     
     @IBAction func updateL(sender: UIButton) {
         let t = self.view.viewWithTag(111) as! GA_TextField
-        t.update(.LEFT, hasCancleButton: true)
+        t.update(.LEFT, btnPositionType: .LEFTBUTTON)
     }
 
     override func didReceiveMemoryWarning() {
@@ -47,7 +47,7 @@ extension ViewController: GA_TextFieldDelegate {
     
     }
     
-    func cancleButton() {
-        print("cancleButton")
+    func cancleButton(btnPostionType: ButtonPostionType) {
+        print(btnPostionType)
     }
 }

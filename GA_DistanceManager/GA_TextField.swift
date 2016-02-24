@@ -13,29 +13,28 @@ t.tag = 111
 self.view.addSubview(t)
 
 //改变放大镜位置的方法 hasCancleButton == true 取消按钮显示
-t.update(.MIDDLE)
-t.update(.LEFT, hasCancleButton: true)
+t.update(.MIDDLE, btnPositionType: .RIGHTBUTTON)
+t.update(.LEFT, btnPositionType: .LEFTBUTTON)
 
 //代理方法
 func myTextFieldDidBeginEditing(textField: UITextField)
 func myTextFieldShouldBeginEditing(textField: UITextField)
 func myTextFieldShouldReturn(text: String)
-func cancleButton()
+func cancleButton(btnPostionType: ButtonPostionType)
 }
 */
 
 import UIKit
 
-@objc
-protocol GA_TextFieldDelegate {
-    optional
+protocol GA_TextFieldDelegate: NSObjectProtocol {
     func myTextFieldDidBeginEditing(textField: UITextField)
-    optional
     func myTextFieldShouldBeginEditing(textField: UITextField)
-    optional
     func myTextFieldShouldReturn(text: String)
-    optional
-    func cancleButton()
+    func cancleButton(btnPostionType: ButtonPostionType)
+}
+
+enum ButtonPostionType: Int {
+    case LEFTBUTTON = 1, RIGHTBUTTON = 2, NONE = 0
 }
 
 class GA_TextField: UIView, UITextFieldDelegate {
@@ -43,14 +42,17 @@ class GA_TextField: UIView, UITextFieldDelegate {
     private var t: UITextField!
     private var l: UILabel!
     private var m: UIImageView!
+    private var leftB: UIButton!
     private var b: UIButton!
     
     enum PostionType {
         case LEFT, RIGHT, MIDDLE
     }
+    
     var postionType: PostionType = .RIGHT
-    var hasCancleButton: Bool = false
+    var hasCancleButton: ButtonPostionType = .NONE
     var delegate: GA_TextFieldDelegate!
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -135,7 +137,7 @@ class GA_TextField: UIView, UITextFieldDelegate {
         case .MIDDLE:
             t.placeholder = ""
             let h: CGFloat = self.frame.size.height
-            let w: CGFloat = self.frame.size.width
+            let w: CGFloat = t.frame.size.width
             let lW: CGFloat = 50
             let lX =  w / 2 - lW / 2
             let lY: CGFloat = 0
@@ -152,12 +154,12 @@ class GA_TextField: UIView, UITextFieldDelegate {
         }
     }
     
-    func update(type: PostionType, hasCancleButton: Bool = false) {
+    func update(type: PostionType, btnPositionType: ButtonPostionType = .RIGHTBUTTON) {
         if self.postionType == type || t.editing {
             return
         }
         self.postionType = type
-        switch postionType {
+        switch type {
         case .LEFT:
             l.removeFromSuperview()
             break
@@ -166,33 +168,63 @@ class GA_TextField: UIView, UITextFieldDelegate {
         case .RIGHT:
             break
         }
-        
-        if hasCancleButton {
-            bRemoveFromSuperview()
-            self.hasCancleButton = hasCancleButton
-            let x: CGFloat = 0
-            let y: CGFloat = 0
-            let w: CGFloat = 65
-            let h: CGFloat = self.frame.size.height
-            b = UIButton(frame: CGRectMake(x, y, w, h))
-            self.addSubview(b)
-            b.tag = 222
-            b.setTitle("取消搜索", forState: .Normal)
-            b.setTitleColor(UIColor.blackColor(), forState: .Normal)
-            b.titleLabel?.font = UIFont.systemFontOfSize(11)
-            b.backgroundColor = UIColor.lightGrayColor()
-            b.addTarget(self, action: "bAction:", forControlEvents: .TouchUpInside)
-            
-            let tX = w + 5
-            let tY: CGFloat = 0
-            let tW = self.frame.width - w
-            let tH = self.frame.height
-            t.frame = CGRectMake(tX, tY, tW, tH)
+        self.hasCancleButton = btnPositionType
+        switch btnPositionType {
+        case .LEFTBUTTON:
+            buildLeftButton()
+            break
+        case .NONE:
+            break
+        case .RIGHTBUTTON:
+            buildRightButton()
+            break
         }
-        
         reloadTextFieldPlaceholder(type)
         reloadTextFieldGlassPosition(type, afType: type, hasCancleButton: hasCancleButton)
     }
+    
+    func buildButton() {
+        bRemoveFromSuperview()
+        b = UIButton()
+        self.addSubview(b)
+        b.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        b.titleLabel?.font = UIFont.systemFontOfSize(11)
+        b.backgroundColor = UIColor.lightGrayColor()
+        b.addTarget(self, action: "bAction:", forControlEvents: .TouchUpInside)
+    }
+    
+    func buildRightButton() {
+        buildButton()
+        b.setTitle("取消", forState: .Normal)
+        let w: CGFloat = 65
+        let h: CGFloat = self.frame.size.height
+        let x: CGFloat = self.frame.size.width - w
+        let y: CGFloat = 0
+        b.frame = CGRectMake(x, y, w, h)
+        
+        let tX: CGFloat = 0
+        let tY: CGFloat = 0
+        let tW = self.frame.width - w - 10
+        let tH = self.frame.height
+        t.frame = CGRectMake(tX, tY, tW, tH)
+    }
+    
+    func buildLeftButton() {
+        buildButton()
+        b.setTitle("取消搜索", forState: .Normal)
+        let x: CGFloat = 0
+        let y: CGFloat = 0
+        let w: CGFloat = 65
+        let h: CGFloat = self.frame.size.height
+        b.frame = CGRectMake(x, y, w, h)
+        
+        let tX = w + 5
+        let tY: CGFloat = 0
+        let tW = self.frame.width - w - 10
+        let tH = self.frame.height
+        t.frame = CGRectMake(tX, tY, tW, tH)
+    }
+    
     func bRemoveFromSuperview() {
         if b != nil {
             b.removeFromSuperview()
@@ -221,15 +253,15 @@ class GA_TextField: UIView, UITextFieldDelegate {
             break
         }
         
-        self.hasCancleButton = false
-        
         reloadTextFieldPlaceholder(postionType)
         reloadTextFieldGlassPosition(postionType, afType: postionType, hasCancleButton: hasCancleButton)
         
-        delegate.cancleButton!()
+        delegate.cancleButton(self.hasCancleButton)
+        
+        self.hasCancleButton = .NONE
     }
     
-    func reloadTextFieldGlassPosition(beType: PostionType, afType: PostionType, hasCancleButton: Bool = false) {
+    func reloadTextFieldGlassPosition(beType: PostionType, afType: PostionType, hasCancleButton: ButtonPostionType = .NONE) {
         getParameter {
             [weak self] i, m, w, h, mW, mH, space in
             if let weakSelf = self {
@@ -247,12 +279,11 @@ class GA_TextField: UIView, UITextFieldDelegate {
                     let lW: CGFloat = 50
                     let lX =  w / 2 - lW / 2
                     let lY: CGFloat = 0
-                    if weakSelf.hasCancleButton {
+                    if weakSelf.hasCancleButton == .LEFTBUTTON {
                         weakSelf.l.frame = CGRectMake(lX, lY, lW, h)
                     }
                     mX = CGRectGetMinX(weakSelf.l.frame) - mW
                     m.frame = CGRectMake(mX, mY, mW, mH)
-                    
                     break
                 case .RIGHT:
                     mX = w - space - mW
@@ -302,7 +333,7 @@ class GA_TextField: UIView, UITextFieldDelegate {
         
         textFieldDidBeginEditingUpdate()
         
-        delegate.myTextFieldDidBeginEditing!(textField)
+        delegate.myTextFieldDidBeginEditing(textField)
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
@@ -324,7 +355,7 @@ class GA_TextField: UIView, UITextFieldDelegate {
         print(tStr)
         
         let text: String = tStr.substringWithRange(range)
-        delegate.myTextFieldShouldReturn!(text)
+        delegate.myTextFieldShouldReturn(text)
         
         textField.resignFirstResponder()
         return true
@@ -343,7 +374,7 @@ class GA_TextField: UIView, UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
 //        print(textField.text)
-        delegate.myTextFieldShouldBeginEditing!(textField)
+        delegate.myTextFieldShouldBeginEditing(textField)
         return true
     }
     
