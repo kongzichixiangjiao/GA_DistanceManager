@@ -14,6 +14,7 @@
 		DCE2E6C51C7C525700C0CB7C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCE2E6C31C7C525700C0CB7C /* LaunchScreen.storyboard */; };
 		DCE2E6D01C7C525700C0CB7C /* GA_DistanceManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE2E6CF1C7C525700C0CB7C /* GA_DistanceManagerTests.swift */; };
 		DCE2E6DB1C7C525700C0CB7C /* GA_DistanceManagerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE2E6DA1C7C525700C0CB7C /* GA_DistanceManagerUITests.swift */; };
+		DCE2E6EB1C7C648900C0CB7C /* GA_TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE2E6EA1C7C648900C0CB7C /* GA_TextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		DCE2E6D61C7C525700C0CB7C /* GA_DistanceManagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GA_DistanceManagerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCE2E6DA1C7C525700C0CB7C /* GA_DistanceManagerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GA_DistanceManagerUITests.swift; sourceTree = "<group>"; };
 		DCE2E6DC1C7C525700C0CB7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCE2E6EA1C7C648900C0CB7C /* GA_TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GA_TextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			children = (
 				DCE2E6BA1C7C525700C0CB7C /* AppDelegate.swift */,
 				DCE2E6BC1C7C525700C0CB7C /* ViewController.swift */,
+				DCE2E6EA1C7C648900C0CB7C /* GA_TextField.swift */,
 				DCE2E6BE1C7C525700C0CB7C /* Main.storyboard */,
 				DCE2E6C11C7C525700C0CB7C /* Assets.xcassets */,
 				DCE2E6C31C7C525700C0CB7C /* LaunchScreen.storyboard */,
@@ -258,6 +261,7 @@
 			files = (
 				DCE2E6BD1C7C525700C0CB7C /* ViewController.swift in Sources */,
 				DCE2E6BB1C7C525700C0CB7C /* AppDelegate.swift in Sources */,
+				DCE2E6EB1C7C648900C0CB7C /* GA_TextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
