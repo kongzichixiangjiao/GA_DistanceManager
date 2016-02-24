@@ -8,11 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController, GA_TextFieldDelegate {
+class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let t = GA_TextField(frame: CGRectMake(20, 100, 200, 30), delegate: self)
+        let t = GA_TextField(frame: CGRectMake(20, 100, 300, 30), delegate: self)
         t.tag = 111
         self.view.addSubview(t)
     }
@@ -24,17 +24,30 @@ class ViewController: UIViewController, GA_TextFieldDelegate {
     
     @IBAction func updateL(sender: UIButton) {
         let t = self.view.viewWithTag(111) as! GA_TextField
-        t.update(.LEFT)
+        t.update(.LEFT, hasCancleButton: true)
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func myTextFieldDidBeginEditing(textField: UITextField) {
-        print("2")
-    }
 
 }
 
+extension ViewController: GA_TextFieldDelegate {
+    func myTextFieldDidBeginEditing(textField: UITextField) {
+        print("2")
+    }
+    
+    func myTextFieldShouldBeginEditing(textField: UITextField) {
+    
+    }
+    
+    func myTextFieldShouldReturn(text: String) {
+    
+    }
+    
+    func cancleButton() {
+        print("cancleButton")
+    }
+}
